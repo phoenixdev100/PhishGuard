@@ -30,18 +30,31 @@ A powerful browser extension and web application that helps protect users from p
 
 ### Setup
 
-1. Clone the repository:
+1. Create and activate a virtual environment:
+```bash
+# On Windows
+python -m venv venv
+.\venv\Scripts\activate
+
+# On macOS/Linux
+python3 -m venv venv
+source venv/bin/activate
+```
+
+2. Clone the repository:
 ```bash
 git clone https://github.com/phoenixdev100/phishing-website-detection.git
 cd phishing-website-detection
 ```
 
-2. Install dependencies:
+3. Install dependencies with specific versions to avoid compatibility issues:
 ```bash
+pip install Flask==2.2.2
+pip install Werkzeug==2.2.2
 pip install -r requirements.txt
 ```
 
-3. Load the browser extension:
+4. Load the browser extension:
    - Open your browser's extension management page
    - Enable "Developer mode"
    - Click "Load unpacked" and select the project directory
@@ -50,10 +63,33 @@ pip install -r requirements.txt
 
 1. Start the Flask server:
 ```bash
+# Make sure you're in the virtual environment
 python app.py
 ```
 
 2. The browser extension will automatically analyze websites you visit and display warnings for potential phishing attempts.
+
+### Troubleshooting
+
+If you encounter the error `ImportError: cannot import name 'url_quote' from 'werkzeug.urls'`, try these steps:
+
+1. Deactivate and reactivate your virtual environment:
+```bash
+deactivate
+.\venv\Scripts\activate  # On Windows
+# or
+source venv/bin/activate  # On macOS/Linux
+```
+
+2. Reinstall the dependencies with specific versions:
+```bash
+pip uninstall Flask Werkzeug
+pip install Flask==2.2.2 Werkzeug==2.2.2
+```
+3. Open your browser and navigate to:
+```
+http://localhost:5000
+```
 
 ## 🧠 How It Works
 
