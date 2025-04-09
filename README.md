@@ -30,7 +30,13 @@ A powerful browser extension and web application that helps protect users from p
 
 ### Setup
 
-1. Create and activate a virtual environment:
+1. Clone the repository:
+```bash
+git clone https://github.com/phoenixdev100/phishing-website-detection.git
+cd phishing-website-detection
+```
+
+2. Create and activate a virtual environment:
 ```bash
 # On Windows
 python -m venv venv
@@ -41,23 +47,12 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-2. Clone the repository:
-```bash
-git clone https://github.com/phoenixdev100/phishing-website-detection.git
-cd phishing-website-detection
-```
-
 3. Install dependencies with specific versions to avoid compatibility issues:
 ```bash
 pip install Flask==2.2.2
 pip install Werkzeug==2.2.2
 pip install -r requirements.txt
 ```
-
-4. Load the browser extension:
-   - Open your browser's extension management page
-   - Enable "Developer mode"
-   - Click "Load unpacked" and select the project directory
 
 ## 🚀 Usage
 
