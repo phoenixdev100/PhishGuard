@@ -17,19 +17,25 @@ CORS(app)
 
 # Load the models
 try:
+    print("Attempting to load phishing_model.pkl...")
     # Try loading the model from the notebook first
     with open('phishing_model.pkl', 'rb') as f:
         model = pickle.load(f)
     print("Phishing model loaded successfully!")
 except Exception as e:
+    print(f"Error loading phishing_model.pkl: {str(e)}")
     try:
+        print("Attempting to load model.pkl...")
         # Fallback to the other model file
         with open('model.pkl', 'rb') as f:
             model = pickle.load(f)
         print("Model loaded successfully!")
     except Exception as e:
-        print(f"Error loading model: {e}")
+        print(f"Error loading model.pkl: {str(e)}")
         model = None
+
+if model is None:
+    print("WARNING: No model loaded! The application will run in rule-based mode only.")
 
 def is_valid_domain(domain):
     """Check if a domain is valid and properly registered.
@@ -329,7 +335,9 @@ def is_likely_phishing(url, domain_age, has_ssl, features=None):
     # Known safe domains (add more as needed)
     safe_domains = {
         'google.com', 'facebook.com', 'microsoft.com', 'apple.com', 'amazon.com',
-        'github.com', 'linkedin.com', 'twitter.com', 'instagram.com', 'youtube.com'
+        'github.com', 'linkedin.com', 'twitter.com', 'instagram.com', 'youtube.com',
+        'netflix.com', 'spotify.com', 'reddit.com', 'wikipedia.org', 'mozilla.org',
+        'adobe.com', 'dropbox.com', 'slack.com', 'zoom.us', 'discord.com'
     }
     
     # Check if it's a known safe domain
@@ -338,54 +346,78 @@ def is_likely_phishing(url, domain_age, has_ssl, features=None):
     if base_domain in safe_domains:
         return False, 0.1, ["Known safe domain"]
     
-    # High-risk factors
+    # High-risk factors (each adds significant risk)
     if re.search(r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', url):
         risk_factors.append("Contains IP address")
-        risk_score += 0.4
+        risk_score += 0.6
         
     if not has_ssl:
         risk_factors.append("Missing SSL certificate")
-        risk_score += 0.3
+        risk_score += 0.5
         
     if domain_age < 30 and domain_age != -1:
-        risk_factors.append("Recently registered domain")
+        risk_factors.append("Recently registered domain (less than 30 days)")
+        risk_score += 0.4
+    
+    # Check for suspicious TLDs
+    suspicious_tlds = ['tk', 'ml', 'ga', 'cf', 'gq', 'xyz', 'work', 'click', 'loan', 'top', 'club', 'online']
+    if ext.suffix in suspicious_tlds:
+        risk_factors.append(f"Suspicious TLD: {ext.suffix}")
+        risk_score += 0.4
+    
+    # Check for subdomain count
+    subdomain_count = len(ext.subdomain.split('.')) if ext.subdomain else 0
+    if subdomain_count > 2:
+        risk_factors.append(f"Multiple subdomains ({subdomain_count})")
         risk_score += 0.3
     
-    # Medium-risk factors
-    if len(url) > 100:
-        risk_factors.append("Unusually long URL")
-        risk_score += 0.2
-        
-    if ext.subdomain and len(ext.subdomain.split('.')) > 2:
-        risk_factors.append("Multiple subdomains")
-        risk_score += 0.2
+    # Check for hyphens in domain
+    if domain.count('-') > 2:
+        risk_factors.append("Multiple hyphens in domain")
+        risk_score += 0.3
     
-    # Check for suspicious patterns
+    # Check for suspicious patterns in URL
     suspicious_patterns = [
         r'secure', r'account', r'banking', r'login', r'signin', r'verify',
-        r'update', r'confirm', r'paypal', r'password'
+        r'update', r'confirm', r'paypal', r'password', r'credit', r'card',
+        r'bank', r'security', r'alert', r'warning', r'important', r'urgent'
     ]
     pattern_count = sum(1 for pattern in suspicious_patterns if re.search(pattern, url.lower()))
-    if pattern_count >= 3:
-        risk_factors.append(f"Contains multiple suspicious keywords ({pattern_count})")
-        risk_score += 0.2
+    if pattern_count >= 2:
+        risk_factors.append(f"Contains suspicious keywords ({pattern_count})")
+        risk_score += min(0.3 + (pattern_count * 0.1), 0.6)
     
     # Check for character repeats
     if re.search(r'([a-zA-Z0-9-_.])\1{4,}', url):
         risk_factors.append("Contains repeated patterns")
-        risk_score += 0.2
+        risk_score += 0.3
     
     # Special characters check
     special_chars = re.findall(r'[^a-zA-Z0-9-._~:/?#\[\]@!$&\'()*+,;=]', url)
     if len(special_chars) > 5:
         risk_factors.append("Excessive special characters")
+        risk_score += 0.3
+    
+    # Check for URL length
+    if len(url) > 100:
+        risk_factors.append("Unusually long URL")
+        risk_score += 0.2
+    
+    # Check for @ symbol in URL
+    if '@' in url:
+        risk_factors.append("Contains @ symbol")
+        risk_score += 0.4
+    
+    # Check for multiple forward slashes
+    if '//' in parsed.path:
+        risk_factors.append("Multiple forward slashes in path")
         risk_score += 0.2
     
     # Normalize risk score to be between 0 and 1
     risk_score = min(risk_score, 1.0)
     
     # Determine if it's phishing based on risk score
-    is_phishing = risk_score >= 0.5
+    is_phishing = risk_score >= 0.3  # Lowered threshold to catch more potential phishing sites
     
     return is_phishing, risk_score, risk_factors
 
@@ -536,18 +568,23 @@ def check_url():
 def predict():
     """Predict if a URL is phishing."""
     try:
+        print("Received prediction request")
         data = request.get_json(silent=True)
         if not data or "url" not in data:
+            print("No URL provided in request")
             return jsonify({"error": "No URL provided", "status": "error"}), 400
         
         url = data["url"].strip()
+        print(f"Processing URL: {url}")
         
         # Basic URL validation
         if not url:
+            print("Empty URL provided")
             return jsonify({"error": "Empty URL provided", "status": "error"}), 400
             
         # Handle special cases
         if url.lower() == "www.www.com":
+            print("Special case URL detected")
             return jsonify({
                 "url": url,
                 "is_phishing": True,
@@ -563,8 +600,9 @@ def predict():
             url = 'https://' + url
             
         # Validate URL
-        is_valid, error_msg = is_valid_url(url)
+        is_valid, error_msg, risk_level = is_valid_url(url)
         if not is_valid:
+            print(f"URL validation failed: {error_msg}")
             return jsonify({
                 "url": url,
                 "is_phishing": True,
@@ -577,7 +615,14 @@ def predict():
             })
         
         # Extract features
+        print("Extracting features...")
         features = extract_features(url) if model else None
+        if features is None:
+            print("Feature extraction failed")
+            return jsonify({
+                "error": "Failed to extract features from URL",
+                "status": "error"
+            }), 500
         
         # Get additional URL information
         parsed_url = urlparse(url)
@@ -585,13 +630,16 @@ def predict():
         ext = tldextract.extract(url)
         
         # Get domain age
+        print("Getting domain age...")
         domain_age = get_domain_age(domain)
         domain_age_str = f"{domain_age} days" if domain_age > 0 else "Unknown"
         
         # Check SSL
+        print("Checking SSL...")
         has_ssl = check_ssl_cert(url)
         
         # Use rule-based detection
+        print("Running rule-based detection...")
         is_phishing, confidence, risk_factors = is_likely_phishing(url, domain_age, has_ssl, features)
         
         # Determine status based on confidence
@@ -604,6 +652,7 @@ def predict():
         else:
             status = "unsafe"
         
+        print(f"Prediction complete. Status: {status}, Confidence: {confidence}")
         return jsonify({
             "url": url,
             "is_phishing": is_phishing,
@@ -616,7 +665,9 @@ def predict():
         })
         
     except Exception as e:
-        print(f"Error in prediction: {e}")
+        print(f"Error in prediction: {str(e)}")
+        import traceback
+        print(traceback.format_exc())
         return jsonify({
             "error": str(e),
             "status": "error"
