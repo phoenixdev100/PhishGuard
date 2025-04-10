@@ -20,6 +20,12 @@ A powerful browser extension and web application that helps protect users from p
 - 📊 Detailed threat analysis
 - 🚀 Fast and efficient processing
 - 🔒 Privacy-focused design
+- 🔄 Auto-check functionality for real-time protection
+- 📈 Confidence score display with percentage accuracy
+- 📝 URL scanning history with clear functionality
+- 🎨 Compact, modern user interface
+- 🔔 Smart notifications system
+- ⚡ Efficient retry mechanism for reliable scanning
 
 ## 🛠️ Installation
 
@@ -53,6 +59,13 @@ pip install Flask==2.2.2
 pip install Werkzeug==2.2.2
 pip install -r requirements.txt
 ```
+
+4. Steps to load the browser extension (optional):
+   - Open your browser's extension management page
+   - Enable "Developer mode"
+   - Click "Load unpacked" and select the project directory
+
+5. Make sure to run the flask server before using the extension if you are trying to run extension locally.
 
 ## 🚀 Usage
 
@@ -95,16 +108,24 @@ The system uses multiple features to detect phishing websites:
 - Website content analysis
 - Machine learning model predictions
 - SSL certificate verification
+- Real-time confidence scoring
+- Smart retry mechanism
+- Automated URL validation
+- Historical data analysis
+- Pattern recognition
 
 ## 📁 Project Structure
 
 ```
 phishing-website-detection/
 ├── app.py                 # Flask application
-├── background.js          # Extension background script
-├── popup.html            # Extension popup interface
-├── popup.js              # Popup functionality
-├── manifest.json         # Extension configuration
+├── extension/            # Chrome extension files
+│   ├── background.js     # Background service worker
+│   ├── popup.html       # Extension popup interface
+│   ├── popup.js         # Popup functionality
+│   ├── content.js       # Content script
+│   ├── content.css      # Content styles
+│   └── manifest.json    # Extension configuration
 ├── train_model.py        # Model training script
 ├── phishing_model.pkl    # Trained model
 └── requirements.txt      # Python dependencies
