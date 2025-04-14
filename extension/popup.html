@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PhishDash</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script defer src="popup.js"></script>
+    <style>
+        body {
+            width: 300px;
+            padding: 10px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background: #f8f9fa;
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .header h1 {
+            font-size: 18px;
+            margin: 0;
+            color: #2c3e50;
+        }
+        
+        .header i {
+            color: #3498db;
+            margin-right: 8px;
+            font-size: 20px;
+        }
+        
+        .url-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            box-sizing: border-box;
+            font-size: 13px;
+            transition: border-color 0.3s;
+        }
+        
+        .url-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .check-button {
+            width: 100%;
+            padding: 8px;
+            background: linear-gradient(45deg, #3498db, #2ecc71);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .check-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .spinner {
+            display: none;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 1s linear infinite;
+            margin: 8px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .result {
+            margin: 10px 0;
+            padding: 8px;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        
+        .result.safe {
+            background: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+        }
+        
+        .result.phishing {
+            background: rgba(231, 76, 60, 0.1);
+            color: #c0392b;
+        }
+        
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .toggle-container label {
+            margin-left: 8px;
+            font-size: 13px;
+            color: #2c3e50;
+        }
+        
+        .history-container {
+            margin-top: 10px;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .history-title {
+            font-size: 14px;
+            margin: 0 0 8px 0;
+            color: #2c3e50;
+        }
+        
+        .history-list {
+            max-height: 150px;
+            overflow-y: auto;
+            margin-bottom: 8px;
+        }
+        
+        .history-item {
+            padding: 6px;
+            margin-bottom: 4px;
+            border-radius: 3px;
+            font-size: 11px;
+            word-break: break-all;
+            background: #f8f9fa;
+        }
+        
+        .history-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .history-item.safe {
+            border-left: 2px solid #27ae60;
+        }
+        
+        .history-item.phishing {
+            border-left: 2px solid #c0392b;
+        }
+        
+        .clear-history {
+            width: 100%;
+            padding: 6px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+            transition: background-color 0.3s;
+        }
+        
+        .clear-history:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <i class="fas fa-shield-alt"></i>
+        <h1>PhishDash</h1>
+    </div>
+    
+    <input type="text" id="urlInput" class="url-input" placeholder="Enter URL or check current tab">
+    <button id="checkButton" class="check-button">
+        <i class="fas fa-search"></i> Check URL
+    </button>
+    
+    <div class="spinner" id="spinner"></div>
+    <div id="result" class="result"></div>
+    
+    <div class="toggle-container">
+        <input type="checkbox" id="autoCheckToggle">
+        <label for="autoCheckToggle">Auto-check pages</label>
+    </div>
+    
+    <div class="history-container">
+        <h3 class="history-title">Scan History</h3>
+        <div id="history" class="history-list"></div>
+        <button id="clearHistory" class="clear-history">
+            <i class="fas fa-trash-alt"></i> Clear History
+        </button>
+    </div>
+</body>
+</html>
