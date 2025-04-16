@@ -1,0 +1,68 @@
+@keyframes slideDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+}
+
+#phishdash-warning {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15),
+                0 0 30px rgba(0, 0, 0, 0.1);
+    justify-content: space-between;
+    font-size: 15px;
+    min-width: 300px;
+    transition: transform 0.2s ease;
+}
+
+#phishdash-warning:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2),
+                0 0 35px rgba(0, 0, 0, 0.15);
+}
+
+#phishdash-warning button {
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+#phishdash-warning button:hover {
+    background: rgba(255, 255, 255, 0.3) !important;
+    transform: translateY(-1px);
+}
+
+#phishdash-warning span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.5;
+}
+
+#phishdash-warning div {
+    letter-spacing: 0.2px;
+}
+
+#phishdash-warning strong {
+    font-size: 1.1em;
+    margin-bottom: 5px;
+    display: block;
+}
+
+#phishdash-warning p {
+    margin: 5px 0;
+    font-size: 1em;
+} 
