@@ -1,206 +1,647 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>PhishDash</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>PhishGuard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <script defer src="popup.js"></script>
     <style>
-        body {
-            width: 300px;
-            padding: 10px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
             margin: 0;
-            background: #f8f9fa;
+            padding: 0;
         }
-        
-        .header {
+
+        :root {
+            --bg: #ffffff;
+            --surface: #f9fafb;
+            --border: #e5e7eb;
+            --text: #111827;
+            --muted: #6b7280;
+            --accent: #111827;
+            --green: #16a34a;
+            --green-bg: #f0fdf4;
+            --green-bdr: #bbf7d0;
+            --red: #dc2626;
+            --red-bg: #fef2f2;
+            --red-bdr: #fecaca;
+            --orange: #d97706;
+            --orange-bg: #fffbeb;
+            --orange-bdr: #fde68a;
+            --radius: 10px;
+        }
+
+        body {
+            width: 360px;
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* ── TOP NAV ── */
+        .nav {
             display: flex;
             align-items: center;
-            margin-bottom: 10px;
+            justify-content: space-between;
+            padding: 14px 16px 12px;
+            border-bottom: 1px solid var(--border);
         }
-        
-        .header h1 {
-            font-size: 18px;
-            margin: 0;
-            color: #2c3e50;
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
         }
-        
-        .header i {
-            color: #3498db;
-            margin-right: 8px;
-            font-size: 20px;
-        }
-        
-        .url-input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            margin-bottom: 8px;
-            box-sizing: border-box;
+
+        .nav-logo-icon {
+            width: 28px;
+            height: 28px;
+            background: var(--accent);
+            border-radius: 7px;
+            display: grid;
+            place-items: center;
+            color: #fff;
             font-size: 13px;
-            transition: border-color 0.3s;
         }
-        
-        .url-input:focus {
-            outline: none;
-            border-color: #3498db;
+
+        .nav-logo-text {
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--text);
+            letter-spacing: -0.3px;
         }
-        
-        .check-button {
-            width: 100%;
-            padding: 8px;
-            background: linear-gradient(45deg, #3498db, #2ecc71);
-            color: white;
+
+        .nav-logo-text span {
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .server-dot {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .server-dot i {
+            font-size: 8px;
+            color: #9ca3af;
+            transition: color .3s;
+        }
+
+        .server-dot.online i {
+            color: var(--green);
+        }
+
+        .server-dot.offline i {
+            color: var(--red);
+        }
+
+        /* ── SCAN BAR ── */
+        .scan-wrap {
+            padding: 14px 14px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .scan-bar {
+            display: flex;
+            align-items: center;
+            border: 1.5px solid var(--border);
+            border-radius: 50px;
+            overflow: hidden;
+            background: var(--bg);
+            transition: border-color .2s;
+        }
+
+        .scan-bar:focus-within {
+            border-color: var(--accent);
+        }
+
+        .scan-bar input {
+            flex: 1;
             border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 13px;
+            outline: none;
+            padding: 9px 14px;
+            font-family: inherit;
+            font-size: 12px;
+            color: var(--text);
+            background: transparent;
+            min-width: 0;
+        }
+
+        .scan-bar input::placeholder {
+            color: #9ca3af;
+        }
+
+        .scan-btn {
+            flex-shrink: 0;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 50px;
+            margin: 3px;
+            font-family: inherit;
             font-weight: 600;
-            transition: transform 0.2s, box-shadow 0.2s;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: opacity .2s;
         }
-        
-        .check-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+
+        .scan-btn:hover {
+            opacity: .85;
         }
-        
-        .spinner {
+
+        .scan-btn:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+        }
+
+        /* ── SPINNER ── */
+        .spinner-row {
             display: none;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #3498db;
-            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 14px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .spinner-row.active {
+            display: flex;
+        }
+
+        .spin-ring {
             width: 16px;
             height: 16px;
-            animation: spin 1s linear infinite;
-            margin: 8px auto;
+            border: 2px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
         }
-        
+
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
-        
-        .result {
-            margin: 10px 0;
-            padding: 8px;
-            border-radius: 4px;
-            text-align: center;
-            font-weight: 600;
-            font-size: 13px;
+
+        /* ── RESULT CARD ── */
+        .result-card {
+            display: none;
+            margin: 0 14px 12px;
+            border-radius: var(--radius);
+            border: 1.5px solid var(--border);
+            overflow: hidden;
         }
-        
-        .result.safe {
-            background: rgba(46, 204, 113, 0.1);
-            color: #27ae60;
+
+        .result-card.active {
+            display: block;
         }
-        
-        .result.phishing {
-            background: rgba(231, 76, 60, 0.1);
-            color: #c0392b;
-        }
-        
-        .toggle-container {
+
+        .result-header {
             display: flex;
             align-items: center;
-            margin: 10px 0;
-            padding: 8px;
-            background: white;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            gap: 10px;
+            padding: 11px 13px;
         }
-        
-        .toggle-container label {
-            margin-left: 8px;
+
+        .result-header.safe {
+            background: var(--green-bg);
+            border-bottom: 1px solid var(--green-bdr);
+        }
+
+        .result-header.warn {
+            background: var(--orange-bg);
+            border-bottom: 1px solid var(--orange-bdr);
+        }
+
+        .result-header.danger {
+            background: var(--red-bg);
+            border-bottom: 1px solid var(--red-bdr);
+        }
+
+        .result-hicon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: grid;
+            place-items: center;
             font-size: 13px;
-            color: #2c3e50;
+            flex-shrink: 0;
         }
-        
-        .history-container {
-            margin-top: 10px;
-            padding: 8px;
-            background: white;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+
+        .result-hicon.safe {
+            background: #dcfce7;
+            color: var(--green);
         }
-        
-        .history-title {
-            font-size: 14px;
-            margin: 0 0 8px 0;
-            color: #2c3e50;
+
+        .result-hicon.warn {
+            background: #fef3c7;
+            color: var(--orange);
         }
-        
-        .history-list {
-            max-height: 150px;
+
+        .result-hicon.danger {
+            background: #fee2e2;
+            color: var(--red);
+        }
+
+        .result-htitle {
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .result-htitle.safe {
+            color: var(--green);
+        }
+
+        .result-htitle.warn {
+            color: var(--orange);
+        }
+
+        .result-htitle.danger {
+            color: var(--red);
+        }
+
+        .result-hurl {
+            font-size: 10.5px;
+            color: var(--muted);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            max-width: 210px;
+        }
+
+        /* ── STATS ROW ── */
+        .stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stat {
+            padding: 9px 10px;
+            text-align: center;
+        }
+
+        .stat+.stat {
+            border-left: 1px solid var(--border);
+        }
+
+        .stat-val {
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 2px;
+        }
+
+        .stat-val.safe {
+            color: var(--green);
+        }
+
+        .stat-val.warn {
+            color: var(--orange);
+        }
+
+        .stat-val.danger {
+            color: var(--red);
+        }
+
+        .stat-label {
+            font-size: 9.5px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        /* ── FACTORS ── */
+        .factors-list {
+            padding: 9px 12px;
+            max-height: 100px;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .factor-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 7px;
+            font-size: 11.5px;
+            color: var(--text);
+        }
+
+        .factor-item i {
+            font-size: 10px;
+            margin-top: 2px;
+            flex-shrink: 0;
+            color: var(--red);
+        }
+
+        .factor-item.ok i {
+            color: var(--green);
+        }
+
+        /* ── AUTO-CHECK TOGGLE ── */
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 12px;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .toggle-label i {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        /* custom toggle switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 34px;
+            height: 18px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            inset: 0;
+            background: #d1d5db;
+            border-radius: 18px;
+            cursor: pointer;
+            transition: background .2s;
+        }
+
+        .slider::before {
+            content: '';
+            position: absolute;
+            width: 13px;
+            height: 13px;
+            left: 3px;
+            bottom: 2.5px;
+            background: #fff;
+            border-radius: 50%;
+            transition: transform .2s;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
+        }
+
+        input:checked+.slider {
+            background: var(--accent);
+        }
+
+        input:checked+.slider::before {
+            transform: translateX(15px);
+        }
+
+        /* ── HISTORY ── */
+        .history-section {
+            padding: 10px 14px 14px;
+        }
+
+        .history-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             margin-bottom: 8px;
         }
-        
-        .history-item {
-            padding: 6px;
-            margin-bottom: 4px;
-            border-radius: 3px;
-            font-size: 11px;
-            word-break: break-all;
-            background: #f8f9fa;
-        }
-        
-        .history-item:last-child {
-            margin-bottom: 0;
-        }
-        
-        .history-item.safe {
-            border-left: 2px solid #27ae60;
-        }
-        
-        .history-item.phishing {
-            border-left: 2px solid #c0392b;
-        }
-        
-        .clear-history {
-            width: 100%;
-            padding: 6px;
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-            font-weight: bold;
+
+        .history-head h3 {
             font-size: 12px;
-            transition: background-color 0.3s;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
-        
-        .clear-history:hover {
-            background-color: #c0392b;
+
+        .history-head h3 i {
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .clear-btn {
+            background: none;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 10px;
+            font-weight: 500;
+            color: var(--muted);
+            padding: 3px 8px;
+            cursor: pointer;
+            transition: all .15s;
+        }
+
+        .clear-btn:hover {
+            border-color: var(--red);
+            color: var(--red);
+        }
+
+        .history-list {
+            max-height: 130px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 9px;
+            border-radius: 7px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+        }
+
+        .history-badge {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+            display: grid;
+            place-items: center;
+            font-size: 9px;
+            flex-shrink: 0;
+        }
+
+        .history-badge.safe {
+            background: var(--green-bg);
+            color: var(--green);
+            border: 1px solid var(--green-bdr);
+        }
+
+        .history-badge.warn {
+            background: var(--orange-bg);
+            color: var(--orange);
+            border: 1px solid var(--orange-bdr);
+        }
+
+        .history-badge.danger {
+            background: var(--red-bg);
+            color: var(--red);
+            border: 1px solid var(--red-bdr);
+        }
+
+        .history-url {
+            font-size: 10.5px;
+            color: var(--text);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 1;
+        }
+
+        .history-score {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--muted);
+            flex-shrink: 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--muted);
+            font-size: 11.5px;
+            padding: 14px 0;
+        }
+
+        .empty-state i {
+            display: block;
+            font-size: 20px;
+            margin-bottom: 5px;
+            opacity: .3;
+        }
+
+        /* scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
         }
     </style>
 </head>
+
 <body>
-    <div class="header">
-        <i class="fas fa-shield-alt"></i>
-        <h1>PhishDash</h1>
+
+    <!-- NAV -->
+    <nav class="nav">
+        <a class="nav-logo" href="#">
+            <div class="nav-logo-icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <span class="nav-logo-text">Phish<span>Guard</span></span>
+        </a>
+        <div class="server-dot" id="serverDot">
+            <i class="fa-solid fa-circle"></i>
+            <span id="serverLabel">Connecting…</span>
+        </div>
+    </nav>
+
+    <!-- SCAN BAR -->
+    <div class="scan-wrap">
+        <div class="scan-bar">
+            <input type="text" id="urlInput" placeholder="Paste or type a URL…" autocomplete="off" spellcheck="false">
+            <button class="scan-btn" id="checkButton">
+                <i class="fa-solid fa-shield-halved"></i> Analyse
+            </button>
+        </div>
     </div>
-    
-    <input type="text" id="urlInput" class="url-input" placeholder="Enter URL or check current tab">
-    <button id="checkButton" class="check-button">
-        <i class="fas fa-search"></i> Check URL
-    </button>
-    
-    <div class="spinner" id="spinner"></div>
-    <div id="result" class="result"></div>
-    
-    <div class="toggle-container">
-        <input type="checkbox" id="autoCheckToggle">
-        <label for="autoCheckToggle">Auto-check pages</label>
+
+    <!-- SPINNER -->
+    <div class="spinner-row" id="spinner">
+        <div class="spin-ring"></div>
+        <span id="spinnerText">Scanning…</span>
     </div>
-    
-    <div class="history-container">
-        <h3 class="history-title">Scan History</h3>
-        <div id="history" class="history-list"></div>
-        <button id="clearHistory" class="clear-history">
-            <i class="fas fa-trash-alt"></i> Clear History
-        </button>
+
+    <!-- RESULT CARD -->
+    <div class="result-card" id="resultCard">
+        <div class="result-header" id="resultHeader">
+            <div class="result-hicon" id="resultIcon">
+                <i class="fa-solid fa-shield-check" id="resultIconIcon"></i>
+            </div>
+            <div>
+                <div class="result-htitle" id="resultTitle">URL Appears Safe</div>
+                <div class="result-hurl" id="resultUrl"></div>
+            </div>
+        </div>
+        <div class="stats-row">
+            <div class="stat">
+                <div class="stat-val safe" id="statRisk">–</div>
+                <div class="stat-label">Risk Score</div>
+            </div>
+            <div class="stat">
+                <div class="stat-val" id="statSsl">–</div>
+                <div class="stat-label">SSL / HTTPS</div>
+            </div>
+            <div class="stat">
+                <div class="stat-val" id="statAge">–</div>
+                <div class="stat-label">Domain Age</div>
+            </div>
+        </div>
+        <div class="factors-list" id="factorsList"></div>
     </div>
+
+    <!-- TOGGLE -->
+    <div class="toggle-row">
+        <label class="toggle-label" for="autoCheckToggle">
+            <i class="fa-solid fa-bolt"></i>
+            Auto-scan tabs
+        </label>
+        <label class="switch">
+            <input type="checkbox" id="autoCheckToggle">
+            <span class="slider"></span>
+        </label>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="history-section">
+        <div class="history-head">
+            <h3><i class="fa-solid fa-clock-rotate-left"></i> Recent Scans</h3>
+            <button class="clear-btn" id="clearHistory">
+                <i class="fa-solid fa-trash-can"></i> Clear
+            </button>
+        </div>
+        <div class="history-list" id="history"></div>
+    </div>
+
 </body>
+
 </html>

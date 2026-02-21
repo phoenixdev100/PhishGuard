@@ -12,6 +12,7 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
     <style>
         *,
         *::before,
@@ -27,9 +28,9 @@
             --dark-2: #1a1a1a;
             --dark-3: #222222;
             --dark-4: #2e2e2e;
-            --mid: #444444;
-            --gray: #888888;
-            --light-gray: #cccccc;
+            --mid: #374151;
+            --gray: #475569;
+            --light-gray: #94a3b8;
             --off-white: #f0f0f0;
             --white: #ffffff;
             --safe: #22c55e;
@@ -1374,7 +1375,7 @@
 
         .cta-sub {
             font-size: 14px;
-            color: var(--gray);
+            color: var(--light-gray);
         }
 
         .cta-btn {
@@ -1543,360 +1544,381 @@
         <a href="#scanner" class="nav-badge"><i class="fa-solid fa-bolt"></i> Scan a URL</a>
     </nav>
 
-    <!-- ========== HERO ========== -->
-    <section class="hero" id="scanner">
+    <main>
 
-        <!-- Floating notification toasts (decorative, aria-hidden) -->
-        <div aria-hidden="true">
-            <div class="hero-toast hero-toast-1">
-                <div class="hero-toast-icon green"><i class="fa-solid fa-shield-check"></i></div>
-                <div class="hero-toast-text">
-                    URL is Safe
-                    <small>Risk Score: 2% &middot; SSL Valid</small>
-                </div>
-            </div>
-            <div class="hero-toast hero-toast-2">
-                <div class="hero-toast-icon red"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <div class="hero-toast-text">
-                    Phishing Detected
-                    <small>Risk Score: 98% &middot; Blocked</small>
-                </div>
-            </div>
-            <div class="hero-toast hero-toast-3">
-                <div class="hero-toast-icon yellow"><i class="fa-solid fa-circle-exclamation"></i></div>
-                <div class="hero-toast-text">
-                    Suspicious Link
-                    <small>Domain Age: 3 days</small>
-                </div>
-            </div>
-        </div>
+        <!-- ========== HERO ========== -->
+        <section class="hero" id="scanner">
 
-        <!-- Main centered content -->
-        <div class="hero-content">
-
-            <div class="hero-icon">
-                <i class="fa-solid fa-shield-halved"></i>
-            </div>
-
-            <div class="hero-tag">
-                <span class="dot"></span>
-                Live Protection &middot; AI-Powered
-            </div>
-
-            <h1>Scan Any URL.<br><span class="h1-muted">Stay Safe Online.</span></h1>
-
-            <p class="hero-sub">
-                PhishGuard uses machine learning, SSL checks, and WHOIS intelligence
-                to detect phishing links in under 3 seconds.
-            </p>
-
-            <!-- Big pill scanbar -->
-            <div class="hero-scanbar">
-                <input type="text" id="urlInput" class="hero-scanbar-input"
-                    placeholder="Paste a URL to check&hellip; e.g. https://login-secure.net" autocomplete="off"
-                    spellcheck="false">
-                <button class="hero-scanbar-btn" id="scanBtn" onclick="scanUrl()">
-                    <i class="fa-solid fa-shield-halved"></i> Analyse
-                </button>
-            </div>
-
-            <!-- Trust strip -->
-            <div class="hero-trust">
-                <span class="hero-trust-item"><i class="fa-solid fa-shield-check"></i> No data stored</span>
-                <span class="hero-trust-sep"></span>
-                <span class="hero-trust-item"><i class="fa-solid fa-bolt"></i> Results in &lt;3s</span>
-                <span class="hero-trust-sep"></span>
-                <span class="hero-trust-item"><i class="fa-solid fa-robot"></i> 6-layer AI</span>
-                <span class="hero-trust-sep"></span>
-                <span class="hero-trust-item"><i class="fa-solid fa-lock"></i> SSL verified</span>
-            </div>
-
-            <!-- Spinner -->
-            <div class="spinner-wrap" id="spinner">
-                <div class="spinner"></div>
-                <span id="spinnerText">Analysing URL&hellip;</span>
-            </div>
-
-            <!-- Result panel -->
-            <div class="hero-result-wrap">
-                <div class="result-panel" id="resultPanel">
-                    <div class="result-header" id="resultHeader">
-                        <div class="result-icon" id="resultIcon">
-                            <i class="fa-solid fa-shield-halved" id="resultIconIcon"></i>
-                        </div>
-                        <div>
-                            <div class="result-title" id="resultTitle">&ndash;</div>
-                            <div class="result-url" id="resultUrl">&ndash;</div>
-                        </div>
+            <!-- Floating notification toasts (decorative, aria-hidden) -->
+            <div aria-hidden="true">
+                <div class="hero-toast hero-toast-1">
+                    <div class="hero-toast-icon green"><i class="fa-solid fa-shield-check"></i></div>
+                    <div class="hero-toast-text">
+                        URL is Safe
+                        <small>Risk Score: 2% &middot; SSL Valid</small>
                     </div>
-                    <div class="result-body">
-                        <div class="stats-grid">
-                            <div class="stat-tile">
-                                <div class="stat-value" id="statRisk">&ndash;</div>
-                                <div class="stat-label">Risk Score</div>
+                </div>
+                <div class="hero-toast hero-toast-2">
+                    <div class="hero-toast-icon red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <div class="hero-toast-text">
+                        Phishing Detected
+                        <small>Risk Score: 98% &middot; Blocked</small>
+                    </div>
+                </div>
+                <div class="hero-toast hero-toast-3">
+                    <div class="hero-toast-icon yellow"><i class="fa-solid fa-circle-exclamation"></i></div>
+                    <div class="hero-toast-text">
+                        Suspicious Link
+                        <small>Domain Age: 3 days</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main centered content -->
+            <div class="hero-content">
+
+                <div class="hero-icon">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+
+                <div class="hero-tag">
+                    <span class="dot"></span>
+                    Live Protection &middot; AI-Powered
+                </div>
+
+                <h1>Scan Any URL.<br><span class="h1-muted">Stay Safe Online.</span></h1>
+
+                <p class="hero-sub">
+                    PhishGuard uses machine learning, SSL checks, and WHOIS intelligence
+                    to detect phishing links in under 3 seconds.
+                </p>
+
+                <!-- Big pill scanbar -->
+                <div class="hero-scanbar">
+                    <input type="text" id="urlInput" class="hero-scanbar-input"
+                        placeholder="Paste a URL to check&hellip; e.g. https://login-secure.net" autocomplete="off"
+                        spellcheck="false">
+                    <button class="hero-scanbar-btn" id="scanBtn" onclick="scanUrl()">
+                        <i class="fa-solid fa-shield-halved"></i> Analyse
+                    </button>
+                </div>
+
+                <!-- Trust strip -->
+                <div class="hero-trust">
+                    <span class="hero-trust-item"><i class="fa-solid fa-shield-check"></i> No data stored</span>
+                    <span class="hero-trust-sep"></span>
+                    <span class="hero-trust-item"><i class="fa-solid fa-bolt"></i> Results in &lt;3s</span>
+                    <span class="hero-trust-sep"></span>
+                    <span class="hero-trust-item"><i class="fa-solid fa-robot"></i> 6-layer AI</span>
+                    <span class="hero-trust-sep"></span>
+                    <span class="hero-trust-item"><i class="fa-solid fa-lock"></i> SSL verified</span>
+                </div>
+
+                <!-- Spinner -->
+                <div class="spinner-wrap" id="spinner">
+                    <div class="spinner"></div>
+                    <span id="spinnerText">Analysing URL&hellip;</span>
+                </div>
+
+                <!-- Result panel -->
+                <div class="hero-result-wrap">
+                    <div class="result-panel" id="resultPanel">
+                        <div class="result-header" id="resultHeader">
+                            <div class="result-icon" id="resultIcon">
+                                <i class="fa-solid fa-shield-halved" id="resultIconIcon"></i>
                             </div>
-                            <div class="stat-tile">
-                                <div class="stat-value" id="statSsl">&ndash;</div>
-                                <div class="stat-label">SSL / HTTPS</div>
-                            </div>
-                            <div class="stat-tile">
-                                <div class="stat-value" id="statAge">&ndash;</div>
-                                <div class="stat-label">Domain Age</div>
+                            <div>
+                                <div class="result-title" id="resultTitle">&ndash;</div>
+                                <div class="result-url" id="resultUrl">&ndash;</div>
                             </div>
                         </div>
-                        <div id="detectionMethodsWrap">
-                            <p class="section-title">Detection Methods</p>
-                            <div class="detection-tags" id="detectionTags"></div>
+                        <div class="result-body">
+                            <div class="stats-grid">
+                                <div class="stat-tile">
+                                    <div class="stat-value" id="statRisk">&ndash;</div>
+                                    <div class="stat-label">Risk Score</div>
+                                </div>
+                                <div class="stat-tile">
+                                    <div class="stat-value" id="statSsl">&ndash;</div>
+                                    <div class="stat-label">SSL / HTTPS</div>
+                                </div>
+                                <div class="stat-tile">
+                                    <div class="stat-value" id="statAge">&ndash;</div>
+                                    <div class="stat-label">Domain Age</div>
+                                </div>
+                            </div>
+                            <div id="detectionMethodsWrap">
+                                <p class="section-title">Detection Methods</p>
+                                <div class="detection-tags" id="detectionTags"></div>
+                            </div>
+                            <div id="riskFactorsWrap" style="display:none;">
+                                <p class="section-title">Risk Factors Found</p>
+                                <ul class="risk-factors-list" id="riskFactorsList"></ul>
+                            </div>
                         </div>
-                        <div id="riskFactorsWrap" style="display:none;">
-                            <p class="section-title">Risk Factors Found</p>
-                            <ul class="risk-factors-list" id="riskFactorsList"></ul>
-                        </div>
                     </div>
                 </div>
-            </div>
 
-        </div><!-- /hero-content -->
-    </section>
+            </div><!-- /hero-content -->
+        </section>
 
-    <!-- ========== STATS STRIP ========== -->
-    <div class="stats-strip">
-        <div class="stats-strip-inner">
-            <div>
-                <div class="strip-stat-num">99.3%</div>
-                <div class="strip-stat-label">Detection Accuracy</div>
-            </div>
-            <div>
-                <div class="strip-stat-num">3s</div>
-                <div class="strip-stat-label">Avg. Scan Time</div>
-            </div>
-            <div>
-                <div class="strip-stat-num">6</div>
-                <div class="strip-stat-label">Detection Layers</div>
-            </div>
-            <div>
-                <div class="strip-stat-num">24/7</div>
-                <div class="strip-stat-label">Live Protection</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========== HOW IT WORKS ========== -->
-    <section id="how-it-works">
-        <div class="main-content">
-            <div class="section-header">
-                <p class="section-eyebrow">Process</p>
-                <h2 class="section-heading">How PhishGuard Works</h2>
-                <p class="section-sub">Three-stage analysis combining AI, real-time lookups, and battle-tested
-                    heuristics.</p>
-            </div>
-            <div class="steps-grid">
-                <div class="step-card">
-                    <p class="step-num">Step 01</p>
-                    <div class="step-icon"><i class="fa-solid fa-link"></i></div>
-                    <h3 class="step-title">URL & Domain Parsing</h3>
-                    <p class="step-desc">The URL is broken down into its components — scheme, domain, path, query. We
-                        check length, special characters, subdomains, suspicious TLDs, and encoded characters
-                        immediately.</p>
-                </div>
-                <div class="step-card">
-                    <p class="step-num">Step 02</p>
-                    <div class="step-icon"><i class="fa-solid fa-brain"></i></div>
-                    <h3 class="step-title">Machine Learning Model</h3>
-                    <p class="step-desc">30 hand-crafted features are fed into a trained classifier. The model was
-                        trained on thousands of phishing and legitimate URLs to identify subtle statistical patterns.
-                    </p>
-                </div>
-                <div class="step-card">
-                    <p class="step-num">Step 03</p>
-                    <div class="step-icon"><i class="fa-solid fa-chart-bar"></i></div>
-                    <h3 class="step-title">Risk Score & Report</h3>
-                    <p class="step-desc">All signals are merged into a 0–100 risk score. SSL validity, domain age
-                        (WHOIS), and network behaviour are factored in for a final verdict with a detailed breakdown.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========== FEATURES ========== -->
-    <section class="features-section" id="features">
-        <div class="features-inner">
-            <div class="section-header">
-                <p class="section-eyebrow" style="color:var(--gray);">Capabilities</p>
-                <h2 class="section-heading">What We Analyse</h2>
-                <p class="section-sub">Every URL scan runs through six independent checks for maximum coverage.</p>
-            </div>
-            <div class="features-grid">
-                <div class="feature-cell">
-                    <div class="feature-cell-icon"><i class="fa-solid fa-robot"></i></div>
-                    <h3 class="feature-cell-title">AI / ML Detection</h3>
-                    <p class="feature-cell-desc">Trained classifier on 30 URL features including structure, encoding,
-                        and host anomalies.</p>
-                </div>
-                <div class="feature-cell">
-                    <div class="feature-cell-icon"><i class="fa-solid fa-lock"></i></div>
-                    <h3 class="feature-cell-title">SSL Certificate Check</h3>
-                    <p class="feature-cell-desc">Validates HTTPS presence and certificate authenticity to flag
-                        unencrypted or spoofed sites.</p>
-                </div>
-                <div class="feature-cell">
-                    <div class="feature-cell-icon"><i class="fa-solid fa-calendar"></i></div>
-                    <h3 class="feature-cell-title">Domain Age (WHOIS)</h3>
-                    <p class="feature-cell-desc">Newly registered domains are a red flag. We query WHOIS records to
-                        check domain creation date.</p>
-                </div>
-                <div class="feature-cell">
-                    <div class="feature-cell-icon"><i class="fa-solid fa-network-wired"></i></div>
-                    <h3 class="feature-cell-title">DNS Resolution</h3>
-                    <p class="feature-cell-desc">Verifies that the domain actually resolves. Ghost domains and
-                        unregistered names are flagged instantly.</p>
-                </div>
-                <div class="feature-cell">
-                    <div class="feature-cell-icon"><i class="fa-solid fa-route"></i></div>
-                    <h3 class="feature-cell-title">Redirect Chain Analysis</h3>
-                    <p class="feature-cell-desc">Follows HTTP redirects and flags chains of 3 or more hops, a common
-                        phishing obfuscation trick.</p>
-                </div>
-                <div class="feature-cell">
-                    <div class="feature-cell-icon"><i class="fa-solid fa-code"></i></div>
-                    <h3 class="feature-cell-title">Page Content Scan</h3>
-                    <p class="feature-cell-desc">Inspects favicon, forms, inline scripts, and external resource ratios
-                        of the live page source.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========== THREAT TYPES ========== -->
-    <section class="threats-section" id="threats">
-        <div class="threats-inner">
-            <div class="section-header">
-                <p class="section-eyebrow">Threat Intel</p>
-                <h2 class="section-heading">Types of Threats We Catch</h2>
-                <p class="section-sub">PhishGuard is trained to recognise all major categories of malicious URLs in the
-                    wild.</p>
-            </div>
-            <div class="threats-grid">
-                <div class="threat-card">
-                    <div class="threat-icon red"><i class="fa-solid fa-fish"></i></div>
-                    <div>
-                        <h3 class="threat-title">Phishing Attacks</h3>
-                        <p class="threat-desc">Fake login pages that impersonate banks, payment gateways, or social
-                            platforms to steal credentials. Often use similar-looking domain names and copied branding.
-                        </p>
-                    </div>
-                </div>
-                <div class="threat-card">
-                    <div class="threat-icon orange"><i class="fa-solid fa-bug"></i></div>
-                    <div>
-                        <h3 class="threat-title">Malware Distribution</h3>
-                        <p class="threat-desc">URLs that trigger automatic downloads of viruses, trojans, ransomware, or
-                            spyware through drive-by downloads or deceptive download buttons.</p>
-                    </div>
-                </div>
-                <div class="threat-card">
-                    <div class="threat-icon yellow"><i class="fa-solid fa-arrows-rotate"></i></div>
-                    <div>
-                        <h3 class="threat-title">Redirect Loops</h3>
-                        <p class="threat-desc">Chains of redirects designed to confuse analysis tools. The final
-                            destination may be a phishing page or exploit kit that bypasses simple URL checkers.</p>
-                    </div>
-                </div>
-                <div class="threat-card">
-                    <div class="threat-icon purple"><i class="fa-solid fa-user-secret"></i></div>
-                    <div>
-                        <h3 class="threat-title">Social Engineering</h3>
-                        <p class="threat-desc">Pages with urgent messaging, fake warnings, or prize notifications
-                            designed to manipulate users into entering sensitive data or calling rogue support numbers.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========== FAQ ========== -->
-    <section class="faq-section" id="faq">
-        <div class="faq-inner">
-            <div class="section-header">
-                <p class="section-eyebrow">FAQ</p>
-                <h2 class="section-heading">Frequently Asked Questions</h2>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    How accurate is PhishGuard?
-                    <i class="fa-solid fa-chevron-down faq-chevron"></i>
-                </button>
-                <div class="faq-answer">
-                    PhishGuard combines ML predictions with multi-layer rule-based analysis achieving over 99% accuracy
-                    on benchmark datasets. However, brand-new phishing campaigns may temporarily evade detection until
-                    the model is retrained with updated data.
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    What data is sent to the server?
-                    <i class="fa-solid fa-chevron-down faq-chevron"></i>
-                </button>
-                <div class="faq-answer">
-                    Only the URL you submit is sent to the backend for analysis. No personal data, browser cookies, or
-                    identifiers are collected or stored. Analyses are stateless and not logged.
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    Why does scanning sometimes take a few seconds?
-                    <i class="fa-solid fa-chevron-down faq-chevron"></i>
-                </button>
-                <div class="faq-answer">
-                    The scanner performs live checks including DNS resolution, SSL certificate verification, WHOIS
-                    lookups, and optionally fetching the page content for deeper analysis. Each network operation adds
-                    latency as it depends on the target server's response time.
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    Can I use PhishGuard as a browser extension?
-                    <i class="fa-solid fa-chevron-down faq-chevron"></i>
-                </button>
-                <div class="faq-answer">
-                    Yes! PhishGuard comes bundled with a lightweight Chrome/Chromium browser extension that auto-checks
-                    every page you visit and alerts you if a risk is detected — without requiring manual URL pasting.
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <button class="faq-question" onclick="toggleFaq(this)">
-                    What should I do if a URL is flagged?
-                    <i class="fa-solid fa-chevron-down faq-chevron"></i>
-                </button>
-                <div class="faq-answer">
-                    Do not open the URL or enter any personal information on that page. Report the link to the platform
-                    you received it on (e.g., email provider, social network). You can also submit it to Google Safe
-                    Browsing or PhishTank for wider protection.
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ========== CTA BANNER ========== -->
-    <section class="cta-banner">
-        <div class="cta-inner">
-            <div class="cta-left">
-                <div class="cta-icon"><i class="fa-solid fa-shield-halved"></i></div>
+        <!-- ========== STATS STRIP ========== -->
+        <div class="stats-strip">
+            <div class="stats-strip-inner">
                 <div>
-                    <h3 class="cta-title">Protect Yourself Right Now</h3>
-                    <p class="cta-sub">One scan can prevent identity theft, financial loss, or malware infection.</p>
+                    <div class="strip-stat-num">99.3%</div>
+                    <div class="strip-stat-label">Detection Accuracy</div>
+                </div>
+                <div>
+                    <div class="strip-stat-num">3s</div>
+                    <div class="strip-stat-label">Avg. Scan Time</div>
+                </div>
+                <div>
+                    <div class="strip-stat-num">6</div>
+                    <div class="strip-stat-label">Detection Layers</div>
+                </div>
+                <div>
+                    <div class="strip-stat-num">24/7</div>
+                    <div class="strip-stat-label">Live Protection</div>
                 </div>
             </div>
-            <a href="#scanner" class="cta-btn"><i class="fa-solid fa-bolt"></i> Scan a URL — Free</a>
         </div>
-    </section>
+
+        <!-- ========== HOW IT WORKS ========== -->
+        <section id="how-it-works">
+            <div class="main-content">
+                <div class="section-header">
+                    <p class="section-eyebrow">Process</p>
+                    <h2 class="section-heading">How PhishGuard Works</h2>
+                    <p class="section-sub">Three-stage analysis combining AI, real-time lookups, and battle-tested
+                        heuristics.</p>
+                </div>
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <p class="step-num">Step 01</p>
+                        <div class="step-icon"><i class="fa-solid fa-link"></i></div>
+                        <h3 class="step-title">URL & Domain Parsing</h3>
+                        <p class="step-desc">The URL is broken down into its components — scheme, domain, path, query.
+                            We
+                            check length, special characters, subdomains, suspicious TLDs, and encoded characters
+                            immediately.</p>
+                    </div>
+                    <div class="step-card">
+                        <p class="step-num">Step 02</p>
+                        <div class="step-icon"><i class="fa-solid fa-brain"></i></div>
+                        <h3 class="step-title">Machine Learning Model</h3>
+                        <p class="step-desc">30 hand-crafted features are fed into a trained classifier. The model was
+                            trained on thousands of phishing and legitimate URLs to identify subtle statistical
+                            patterns.
+                        </p>
+                    </div>
+                    <div class="step-card">
+                        <p class="step-num">Step 03</p>
+                        <div class="step-icon"><i class="fa-solid fa-chart-bar"></i></div>
+                        <h3 class="step-title">Risk Score & Report</h3>
+                        <p class="step-desc">All signals are merged into a 0–100 risk score. SSL validity, domain age
+                            (WHOIS), and network behaviour are factored in for a final verdict with a detailed
+                            breakdown.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== FEATURES ========== -->
+        <section class="features-section" id="features">
+            <div class="features-inner">
+                <div class="section-header">
+                    <p class="section-eyebrow" style="color:var(--gray);">Capabilities</p>
+                    <h2 class="section-heading">What We Analyse</h2>
+                    <p class="section-sub">Every URL scan runs through six independent checks for maximum coverage.</p>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-cell">
+                        <div class="feature-cell-icon"><i class="fa-solid fa-robot"></i></div>
+                        <h3 class="feature-cell-title">AI / ML Detection</h3>
+                        <p class="feature-cell-desc">Trained classifier on 30 URL features including structure,
+                            encoding,
+                            and host anomalies.</p>
+                    </div>
+                    <div class="feature-cell">
+                        <div class="feature-cell-icon"><i class="fa-solid fa-lock"></i></div>
+                        <h3 class="feature-cell-title">SSL Certificate Check</h3>
+                        <p class="feature-cell-desc">Validates HTTPS presence and certificate authenticity to flag
+                            unencrypted or spoofed sites.</p>
+                    </div>
+                    <div class="feature-cell">
+                        <div class="feature-cell-icon"><i class="fa-solid fa-calendar"></i></div>
+                        <h3 class="feature-cell-title">Domain Age (WHOIS)</h3>
+                        <p class="feature-cell-desc">Newly registered domains are a red flag. We query WHOIS records to
+                            check domain creation date.</p>
+                    </div>
+                    <div class="feature-cell">
+                        <div class="feature-cell-icon"><i class="fa-solid fa-network-wired"></i></div>
+                        <h3 class="feature-cell-title">DNS Resolution</h3>
+                        <p class="feature-cell-desc">Verifies that the domain actually resolves. Ghost domains and
+                            unregistered names are flagged instantly.</p>
+                    </div>
+                    <div class="feature-cell">
+                        <div class="feature-cell-icon"><i class="fa-solid fa-route"></i></div>
+                        <h3 class="feature-cell-title">Redirect Chain Analysis</h3>
+                        <p class="feature-cell-desc">Follows HTTP redirects and flags chains of 3 or more hops, a common
+                            phishing obfuscation trick.</p>
+                    </div>
+                    <div class="feature-cell">
+                        <div class="feature-cell-icon"><i class="fa-solid fa-code"></i></div>
+                        <h3 class="feature-cell-title">Page Content Scan</h3>
+                        <p class="feature-cell-desc">Inspects favicon, forms, inline scripts, and external resource
+                            ratios
+                            of the live page source.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== THREAT TYPES ========== -->
+        <section class="threats-section" id="threats">
+            <div class="threats-inner">
+                <div class="section-header">
+                    <p class="section-eyebrow">Threat Intel</p>
+                    <h2 class="section-heading">Types of Threats We Catch</h2>
+                    <p class="section-sub">PhishGuard is trained to recognise all major categories of malicious URLs in
+                        the
+                        wild.</p>
+                </div>
+                <div class="threats-grid">
+                    <div class="threat-card">
+                        <div class="threat-icon red"><i class="fa-solid fa-fish"></i></div>
+                        <div>
+                            <h3 class="threat-title">Phishing Attacks</h3>
+                            <p class="threat-desc">Fake login pages that impersonate banks, payment gateways, or social
+                                platforms to steal credentials. Often use similar-looking domain names and copied
+                                branding.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="threat-card">
+                        <div class="threat-icon orange"><i class="fa-solid fa-bug"></i></div>
+                        <div>
+                            <h3 class="threat-title">Malware Distribution</h3>
+                            <p class="threat-desc">URLs that trigger automatic downloads of viruses, trojans,
+                                ransomware, or
+                                spyware through drive-by downloads or deceptive download buttons.</p>
+                        </div>
+                    </div>
+                    <div class="threat-card">
+                        <div class="threat-icon yellow"><i class="fa-solid fa-arrows-rotate"></i></div>
+                        <div>
+                            <h3 class="threat-title">Redirect Loops</h3>
+                            <p class="threat-desc">Chains of redirects designed to confuse analysis tools. The final
+                                destination may be a phishing page or exploit kit that bypasses simple URL checkers.</p>
+                        </div>
+                    </div>
+                    <div class="threat-card">
+                        <div class="threat-icon purple"><i class="fa-solid fa-user-secret"></i></div>
+                        <div>
+                            <h3 class="threat-title">Social Engineering</h3>
+                            <p class="threat-desc">Pages with urgent messaging, fake warnings, or prize notifications
+                                designed to manipulate users into entering sensitive data or calling rogue support
+                                numbers.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== FAQ ========== -->
+        <section class="faq-section" id="faq">
+            <div class="faq-inner">
+                <div class="section-header">
+                    <p class="section-eyebrow">FAQ</p>
+                    <h2 class="section-heading">Frequently Asked Questions</h2>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        How accurate is PhishGuard?
+                        <i class="fa-solid fa-chevron-down faq-chevron"></i>
+                    </button>
+                    <div class="faq-answer">
+                        PhishGuard combines ML predictions with multi-layer rule-based analysis achieving over 99%
+                        accuracy
+                        on benchmark datasets. However, brand-new phishing campaigns may temporarily evade detection
+                        until
+                        the model is retrained with updated data.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        What data is sent to the server?
+                        <i class="fa-solid fa-chevron-down faq-chevron"></i>
+                    </button>
+                    <div class="faq-answer">
+                        Only the URL you submit is sent to the backend for analysis. No personal data, browser cookies,
+                        or
+                        identifiers are collected or stored. Analyses are stateless and not logged.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Why does scanning sometimes take a few seconds?
+                        <i class="fa-solid fa-chevron-down faq-chevron"></i>
+                    </button>
+                    <div class="faq-answer">
+                        The scanner performs live checks including DNS resolution, SSL certificate verification, WHOIS
+                        lookups, and optionally fetching the page content for deeper analysis. Each network operation
+                        adds
+                        latency as it depends on the target server's response time.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Can I use PhishGuard as a browser extension?
+                        <i class="fa-solid fa-chevron-down faq-chevron"></i>
+                    </button>
+                    <div class="faq-answer">
+                        Yes! PhishGuard comes bundled with a lightweight Chrome/Chromium browser extension that
+                        auto-checks
+                        every page you visit and alerts you if a risk is detected — without requiring manual URL
+                        pasting.
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        What should I do if a URL is flagged?
+                        <i class="fa-solid fa-chevron-down faq-chevron"></i>
+                    </button>
+                    <div class="faq-answer">
+                        Do not open the URL or enter any personal information on that page. Report the link to the
+                        platform
+                        you received it on (e.g., email provider, social network). You can also submit it to Google Safe
+                        Browsing or PhishTank for wider protection.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== CTA BANNER ========== -->
+        <section class="cta-banner">
+            <div class="cta-inner">
+                <div class="cta-left">
+                    <div class="cta-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div>
+                        <h3 class="cta-title">Protect Yourself Right Now</h3>
+                        <p class="cta-sub">One scan can prevent identity theft, financial loss, or malware infection.
+                        </p>
+                    </div>
+                </div>
+                <a href="#scanner" class="cta-btn"><i class="fa-solid fa-bolt"></i> Scan a URL — Free</a>
+            </div>
+        </section>
+
+    </main>
 
     <!-- ========== FOOTER ========== -->
     <footer class="footer">
