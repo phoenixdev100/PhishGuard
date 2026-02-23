@@ -1,13 +1,16 @@
-# Virtual Environment
-venv/
-env/
-ENV/
+# Git
+.git
+.gitignore
 
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
+.env
+venv/
+env/
+.venv/
 .Python
 build/
 develop-eggs/
@@ -25,20 +28,14 @@ wheels/
 .installed.cfg
 *.egg
 
-# IDE
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Misc
 .idea/
 .vscode/
 *.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Project specific
-*.pkl
-*.log
-*.key
-*.pem
-*.cert
-*.crt 
