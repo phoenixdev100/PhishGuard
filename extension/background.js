@@ -1,5 +1,29 @@
 let retryCount = 0;
 const MAX_RETRIES = 3;
+const API_BASE = 'http://localhost:5000';
+
+async function sendWarningToTab(tabId, payload) {
+    try {
+        await chrome.tabs.sendMessage(tabId, payload);
+        return true;
+    } catch (_) {
+        // If content script isn't ready yet, inject and retry once.
+        try {
+            await chrome.scripting.insertCSS({ target: { tabId }, files: ['content.css'] });
+        } catch (_) {
+            // CSS may already be present or page may not allow injection.
+        }
+
+        try {
+            await chrome.scripting.executeScript({ target: { tabId }, files: ['content.js'] });
+            await chrome.tabs.sendMessage(tabId, payload);
+            return true;
+        } catch (error) {
+            console.log('Could not deliver warning popup to tab:', error);
+            return false;
+        }
+    }
+}
 
 // Show notification
 async function showNotification(title, message) {
@@ -24,8 +48,12 @@ async function showNotification(title, message) {
 
 // Check URL and handle response
 async function checkUrl(tabId, url) {
+    if (!tabId || typeof url !== 'string' || !/^https?:\/\//i.test(url)) {
+        return;
+    }
+
     try {
-        const response = await fetch("http://127.0.0.1:5000/predict", {
+        const response = await fetch(`${API_BASE}/check_url`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ url })
@@ -34,16 +62,23 @@ async function checkUrl(tabId, url) {
         if (!response.ok) {
             throw new Error(`Server error: ${response.status}`);
         }
-        
+
         const data = await response.json();
         retryCount = 0; // Reset retry count on success
 
-        // Ensure confidence is a valid number and calculate display confidence
-        const rawConfidence = typeof data.confidence === 'number' && !isNaN(data.confidence) ? data.confidence : 0;
-        const displayConfidence = data.is_phishing ? rawConfidence : (1 - rawConfidence);
-        
+        const details = data.details || {};
+        const status = details.analysis_status || 'dangerous';
+        const riskScore = typeof details.risk_score === 'number' && !isNaN(details.risk_score)
+            ? Math.max(0, Math.min(1, details.risk_score))
+            : 1;
+        const isPhishing = status === 'dangerous' || status === 'suspicious';
+        const riskFactors = Array.isArray(details.risk_factors) ? details.risk_factors : [];
+
+        // Confidence-like value shown in UI banner/notification.
+        const displayConfidence = isPhishing ? riskScore : (1 - riskScore);
+
         // Update badge
-        if (data.is_phishing) {
+        if (isPhishing) {
             chrome.action.setBadgeText({ text: "!", tabId });
             chrome.action.setBadgeBackgroundColor({ color: "#FF0000", tabId });
             showNotification("Phishing Warning", `This website might be unsafe (${(displayConfidence * 100).toFixed(1)}% confidence)`);
@@ -51,36 +86,32 @@ async function checkUrl(tabId, url) {
             chrome.action.setBadgeText({ text: "", tabId });
         }
 
-        // Send message to content script
-        try {
-            await chrome.tabs.sendMessage(tabId, {
-                action: 'showWarning',
-                isPhishing: data.is_phishing,
-                confidence: displayConfidence,
-                riskFactors: data.risk_factors || []
-            });
-        } catch (error) {
-            console.log('Content script not ready:', error);
-        }
+        // Send message to content script, with fallback injection if needed.
+        await sendWarningToTab(tabId, {
+            action: 'showWarning',
+            isPhishing,
+            confidence: displayConfidence,
+            riskFactors
+        });
 
         // Update history
-        chrome.storage.local.get({history: []}, function(result) {
+        chrome.storage.local.get({ history: [] }, function (result) {
             const history = result.history;
             history.unshift({
                 url: url,
-                phishing: data.is_phishing,
-                confidence: displayConfidence,
-                timestamp: new Date().toISOString()
+                status,
+                riskPct: Math.round(riskScore * 100),
+                ts: Date.now()
             });
-            
+
             // Keep only the last 10 entries
             if (history.length > 10) {
                 history.pop();
             }
-            
-            chrome.storage.local.set({history: history});
+
+            chrome.storage.local.set({ history: history });
         });
-        
+
     } catch (error) {
         console.error('Error checking URL:', error);
         if (retryCount < MAX_RETRIES) {
@@ -96,12 +127,28 @@ async function checkUrl(tabId, url) {
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
     if (changeInfo.status === 'complete' && tab.url) {
         // Check if auto-check is enabled
-        chrome.storage.local.get({autoCheck: true}, function(data) {
+        chrome.storage.local.get({ autoCheck: true }, function (data) {
             if (data.autoCheck) {
                 checkUrl(tabId, tab.url);
             }
         });
     }
+});
+
+// Also scan when switching to an already loaded tab.
+chrome.tabs.onActivated.addListener(({ tabId }) => {
+    chrome.storage.local.get({ autoCheck: true }, function (data) {
+        if (!data.autoCheck) {
+            return;
+        }
+
+        chrome.tabs.get(tabId, function (tab) {
+            if (chrome.runtime.lastError || !tab || !tab.url) {
+                return;
+            }
+            checkUrl(tabId, tab.url);
+        });
+    });
 });
 
 // Listen for messages from popup

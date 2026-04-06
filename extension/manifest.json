@@ -11,7 +11,7 @@
         "notifications"
     ],
     "host_permissions": [
-        "http://127.0.0.1:5000/*"
+        "http://localhost:5000/*"
     ],
     "content_security_policy": {
         "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"

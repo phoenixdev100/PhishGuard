@@ -1,5 +1,10 @@
 // Create and inject warning banner
 function createWarningBanner(isPhishing, confidence) {
+    const existingBanner = document.getElementById('phishdash-warning');
+    if (existingBanner) {
+        existingBanner.remove();
+    }
+
     const banner = document.createElement('div');
     banner.id = 'phishdash-warning';
     banner.style.cssText = `
